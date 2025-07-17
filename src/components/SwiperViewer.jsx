@@ -13,7 +13,7 @@ const images = [
     '/images/img3.png',
 ];
 
-export default function ImagePdfLikeViewer() {
+export default function SwiperViewer() {
     const [zoomLevel, setZoomLevel] = useState(1);
     const [rotation, setRotation] = useState(0);
     const swiperRef = useRef(null);
