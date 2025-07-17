@@ -15,18 +15,21 @@ const images = [
 
 export default function SwiperViewer() {
     const [zoomLevel, setZoomLevel] = useState(1);
-    const [rotation, setRotation] = useState(0);
-    const swiperRef = useRef(null);
-
     const zoomOptions = [1, 1.5, 2, 2.5, 3];
+
+    const [rotations, setRotations] = useState(images.map(() => 0));
+    const [activeIndex, setActiveIndex] = useState(0);
+    const swiperRef = useRef(null);
 
     const handleZoomChange = (e) => {
         const newZoom = parseFloat(e.target.value);
         setZoomLevel(newZoom);
     };
 
-    const handleRotate = () => {
-        setRotation((prev) => (prev + 90) % 360);
+    const handleRotate = (index) => {
+        setRotations((prev) =>
+            prev.map((rot, i) => (i === index ? (rot + 90) % 360 : rot))
+        );
     };
 
     const goPrev = () => {
@@ -38,18 +41,32 @@ export default function SwiperViewer() {
     };
 
     return (
-        <div style={{ width: '100%', height: '100vh', background: '#111', color: '#eee', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{
+            width: '100%',
+            height: '100vh',
+            background: '#111',
+            color: '#eee',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center'
+        }}>
             <Swiper
                 modules={[Navigation, Pagination, Zoom, Keyboard]}
                 direction="vertical"
                 slidesPerView={1}
                 spaceBetween={30}
                 keyboard={{ enabled: true }}
+                onSwiper={(swiper) => { swiperRef.current = swiper; }}
+                onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
                 // pagination={{ clickable: true }}
-                onSwiper={(swiper) => {
-                    swiperRef.current = swiper;
+                style={{
+                    width: '80vw',
+                    height: '70vh',
+                    background: '#222',
+                    borderRadius: 8,
+                    overflow: 'hidden'
                 }}
-                style={{ width: '80vw', height: '70vh', background: '#222', borderRadius: 8, overflow: 'hidden' }}
             >
                 {images.map((src, i) => (
                     <SwiperSlide key={i}>
@@ -68,7 +85,7 @@ export default function SwiperViewer() {
                                 style={{
                                     maxWidth: '100%',
                                     maxHeight: '100%',
-                                    transform: `scale(${zoomLevel}) rotate(${rotation}deg)`,
+                                    transform: `scale(${zoomLevel}) rotate(${rotations[i]}deg)`,
                                     transition: 'transform 0.3s ease',
                                     userSelect: 'none',
                                 }}
@@ -79,7 +96,12 @@ export default function SwiperViewer() {
                 ))}
             </Swiper>
 
-            <div style={{ marginTop: 15, display: 'flex', gap: 15, alignItems: 'center' }}>
+            <div style={{
+                marginTop: 15,
+                display: 'flex',
+                gap: 15,
+                alignItems: 'center'
+            }}>
                 <button onClick={goPrev} style={{ padding: '8px 12px' }}>Previous</button>
                 <button onClick={goNext} style={{ padding: '8px 12px' }}>Next</button>
 
@@ -92,7 +114,7 @@ export default function SwiperViewer() {
                     </select>
                 </label>
 
-                <button onClick={handleRotate} style={{ padding: '8px 12px' }}>Rotate 90°</button>
+                <button onClick={() => handleRotate(activeIndex)} style={{ padding: '8px 12px' }}>Rotate 90°</button>
             </div>
         </div>
     );
