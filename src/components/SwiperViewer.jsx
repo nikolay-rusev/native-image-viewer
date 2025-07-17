@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Zoom, Keyboard, Mousewheel, Scrollbar } from 'swiper/modules';
 
@@ -8,7 +8,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/zoom';
 import 'swiper/css/scrollbar';
 
-const images = [
+const imageUrls = [
     '/images/img1.png',
     '/images/img2.png',
     '/images/img3.png',
@@ -18,9 +18,31 @@ export default function SwiperViewer() {
     const [zoomLevel, setZoomLevel] = useState(1);
     const zoomOptions = [1, 1.5, 2, 2.5, 3];
 
-    const [rotations, setRotations] = useState(images.map(() => 0));
+    const [rotations, setRotations] = useState([]);
+    const [images, setImages] = useState([]);
     const [activeIndex, setActiveIndex] = useState(0);
     const swiperRef = useRef(null);
+
+    useEffect(() => {
+        const fetchImages = async () => {
+            const blobs = await Promise.all(
+                imageUrls.map(async (url) => {
+                    const res = await fetch(url);
+                    const blob = await res.blob();
+                    return URL.createObjectURL(blob);
+                })
+            );
+            setImages(blobs);
+            setRotations(blobs.map(() => 0)); // Initialize rotations
+        };
+
+        fetchImages();
+
+        return () => {
+            // Revoke object URLs when component unmounts
+            images.forEach((src) => URL.revokeObjectURL(src));
+        };
+    }, []);
 
     const handleZoomChange = (e) => {
         const newZoom = parseFloat(e.target.value);
