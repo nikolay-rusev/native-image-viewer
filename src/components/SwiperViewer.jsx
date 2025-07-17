@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Zoom, Keyboard } from 'swiper/modules';
+import { Navigation, Pagination, Zoom, Keyboard, Mousewheel, Scrollbar } from 'swiper/modules';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/zoom';
+import 'swiper/css/scrollbar';
 
 const images = [
     '/images/img1.png',
@@ -52,14 +53,16 @@ export default function SwiperViewer() {
             justifyContent: 'center'
         }}>
             <Swiper
-                modules={[Navigation, Pagination, Zoom, Keyboard]}
+                modules={[Navigation, Pagination, Zoom, Keyboard, Mousewheel, Scrollbar]}
                 direction="vertical"
                 slidesPerView={1}
                 spaceBetween={30}
                 keyboard={{ enabled: true }}
+                mousewheel={{ forceToAxis: true }}
+                scrollbar={{ draggable: true }}
+                // pagination={{ clickable: true }}
                 onSwiper={(swiper) => { swiperRef.current = swiper; }}
                 onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
-                // pagination={{ clickable: true }}
                 style={{
                     width: '80vw',
                     height: '70vh',
@@ -96,7 +99,6 @@ export default function SwiperViewer() {
                             />
                         </div>
                     </SwiperSlide>
-
                 ))}
             </Swiper>
 
