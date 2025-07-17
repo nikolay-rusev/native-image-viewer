@@ -77,6 +77,9 @@ export default function SwiperViewer() {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 height: '100%',
+                                paddingTop: `${zoomLevel * 20}px`,
+                                paddingBottom: `${zoomLevel * 20}px`,
+                                boxSizing: 'border-box',
                             }}
                         >
                             <img
@@ -93,6 +96,7 @@ export default function SwiperViewer() {
                             />
                         </div>
                     </SwiperSlide>
+
                 ))}
             </Swiper>
 
