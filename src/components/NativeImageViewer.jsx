@@ -10,7 +10,7 @@ export default function NativeImageViewer() {
   const [images, setImages] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const containerRef = useRef(null);
+  const outerContainerRef = useRef(null);
   const imageRefs = useRef([]);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function NativeImageViewer() {
           const res = await fetch(url);
           const blob = await res.blob();
           return URL.createObjectURL(blob);
-        })
+        }),
       );
       setImages(blobs);
       setRotations(blobs.map(() => 0)); // 0° rotation per image
@@ -39,7 +39,7 @@ export default function NativeImageViewer() {
 
   const handleRotate = (index) => {
     setRotations((prev) =>
-      prev.map((rot, i) => (i === index ? (rot + 90) % 360 : rot))
+      prev.map((rot, i) => (i === index ? (rot + 90) % 360 : rot)),
     );
   };
 
@@ -54,9 +54,9 @@ export default function NativeImageViewer() {
   };
 
   const handleScroll = () => {
-    if (!containerRef.current) return;
+    if (!outerContainerRef.current) return;
 
-    const containerTop = containerRef.current.getBoundingClientRect().top;
+    const containerTop = outerContainerRef.current.getBoundingClientRect().top;
 
     let closestIndex = 0;
     let closestDistance = Infinity;
@@ -88,50 +88,59 @@ export default function NativeImageViewer() {
         overflow: "hidden",
       }}
     >
+      {/* Outer container with native scrollbars */}
       <div
-        ref={containerRef}
+        ref={outerContainerRef}
         onScroll={handleScroll}
         style={{
           width: "80vw",
           height: "70vh",
-          overflowY: "scroll",
-          scrollSnapType: "y mandatory",
-          transform: `scale(${zoomLevel})`,
-          transformOrigin: "top left",
+          overflowY: "auto",
           borderRadius: 8,
           background: "#222",
-          transition: "transform 0.2s ease",
+          scrollSnapType: "y mandatory",
+          position: "relative",
         }}
       >
-        {images.map((src, i) => (
-          <div
-            key={i}
-            ref={(el) => (imageRefs.current[i] = el)}
-            style={{
-              scrollSnapAlign: "start",
-              height: "70vh",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              padding: 20,
-              boxSizing: "border-box",
-            }}
-          >
-            <img
-              src={src}
-              alt={`Page ${i + 1}`}
+        {/* Inner zoomable container */}
+        <div
+          style={{
+            transform: `scale(${zoomLevel})`,
+            transformOrigin: "top left",
+            transition: "transform 0.2s ease",
+            width: "100%",
+          }}
+        >
+          {images.map((src, i) => (
+            <div
+              key={i}
+              ref={(el) => (imageRefs.current[i] = el)}
               style={{
-                maxWidth: "100%",
-                maxHeight: "100%",
-                transform: `rotate(${rotations[i]}deg)`,
-                transition: "transform 0.3s ease",
-                userSelect: "none",
-                pointerEvents: "none",
+                scrollSnapAlign: "start",
+                height: "70vh",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 20,
+                boxSizing: "border-box",
               }}
-              draggable={false}
-            />
-          </div>
-        ))}
+            >
+              <img
+                src={src}
+                alt={`Page ${i + 1}`}
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  transform: `rotate(${rotations[i]}deg)`,
+                  transition: "transform 0.3s ease",
+                  userSelect: "none",
+                  pointerEvents: "none",
+                }}
+                draggable={false}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       <div style={{ marginTop: 15, display: "flex", gap: 15 }}>
