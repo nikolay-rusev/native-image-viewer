@@ -67,10 +67,9 @@ export default function SwiperViewer() {
         <div style={{
             width: '100%',
             height: '100vh',
-            background: '#111',
-            color: '#eee',
             display: 'flex',
             flexDirection: 'column',
+            alignContent: 'center',
             alignItems: 'center',
             justifyContent: 'center'
         }}>
@@ -82,13 +81,11 @@ export default function SwiperViewer() {
                 keyboard={{ enabled: true }}
                 mousewheel={{ forceToAxis: true }}
                 scrollbar={{ draggable: true }}
-                // pagination={{ clickable: true }}
                 onSwiper={(swiper) => { swiperRef.current = swiper; }}
                 onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
                 style={{
                     width: '80vw',
                     height: '70vh',
-                    background: '#222',
                     borderRadius: 8,
                     overflow: 'hidden'
                 }}
@@ -102,8 +99,8 @@ export default function SwiperViewer() {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 height: '100%',
-                                paddingTop: `${zoomLevel * 20}px`,
-                                paddingBottom: `${zoomLevel * 20}px`,
+                                paddingTop: `20px`,
+                                paddingBottom: `20px`,
                                 boxSizing: 'border-box',
                             }}
                         >
@@ -113,7 +110,7 @@ export default function SwiperViewer() {
                                 style={{
                                     maxWidth: '100%',
                                     maxHeight: '100%',
-                                    transform: `scale(${zoomLevel}) rotate(${rotations[i]}deg)`,
+                                    transform: `rotate(${rotations[i]}deg)`,
                                     transition: 'transform 0.3s ease',
                                     userSelect: 'none',
                                 }}
