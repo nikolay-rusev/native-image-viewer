@@ -113,6 +113,7 @@ export default function NativeImageViewer() {
           width: "80vw",
           height: "70vh",
           overflowY: "auto",
+          overflowX: zoomLevel > 1 ? "auto" : "hidden",
           borderRadius: 8,
           background: "#222",
           position: "relative",
