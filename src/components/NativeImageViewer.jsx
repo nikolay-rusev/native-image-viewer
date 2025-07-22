@@ -12,6 +12,7 @@ export default function NativeImageViewer() {
 
   const outerContainerRef = useRef(null);
   const imageRefs = useRef([]);
+  const isProgrammaticScroll = useRef(false);
 
   useEffect(() => {
     const loadImages = async () => {
@@ -52,17 +53,22 @@ export default function NativeImageViewer() {
   };
 
   const goToImage = (index) => {
-    if (imageRefs.current[index]) {
-      imageRefs.current[index].scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-      setActiveIndex(index);
-    }
+    const el = imageRefs.current[index];
+    if (!el) return;
+
+    isProgrammaticScroll.current = true;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    setTimeout(() => {
+      isProgrammaticScroll.current = false;
+    }, 400); // Adjust duration to match scroll speed
+
+    setActiveIndex(index);
   };
 
+
   const handleScroll = () => {
-    if (!outerContainerRef.current) return;
+    if (isProgrammaticScroll.current || !outerContainerRef.current) return;
 
     const containerTop = outerContainerRef.current.getBoundingClientRect().top;
 
@@ -70,6 +76,7 @@ export default function NativeImageViewer() {
     let closestDistance = Infinity;
 
     imageRefs.current.forEach((ref, index) => {
+      if (!ref) return;
       const top = ref.getBoundingClientRect().top;
       const distance = Math.abs(top - containerTop);
       if (distance < closestDistance) {
