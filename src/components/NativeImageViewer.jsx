@@ -33,6 +33,14 @@ export default function NativeImageViewer() {
     };
   }, []);
 
+  // smooth scroll changed element into view
+  useEffect(() => {
+    imageRefs?.current?.[activeIndex]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [activeIndex]);
+
   const handleZoomChange = (e) => {
     setZoomLevel(parseFloat(e.target.value));
   };
@@ -98,7 +106,6 @@ export default function NativeImageViewer() {
           overflowY: "auto",
           borderRadius: 8,
           background: "#222",
-          scrollSnapType: "y proximity",
           position: "relative",
         }}
       >
@@ -116,7 +123,6 @@ export default function NativeImageViewer() {
               key={i}
               ref={(el) => (imageRefs.current[i] = el)}
               style={{
-                scrollSnapAlign: "start",
                 height: "70vh",
                 display: "flex",
                 justifyContent: "center",
