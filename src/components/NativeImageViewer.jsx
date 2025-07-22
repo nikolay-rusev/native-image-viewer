@@ -98,7 +98,7 @@ export default function NativeImageViewer() {
           overflowY: "auto",
           borderRadius: 8,
           background: "#222",
-          scrollSnapType: "y mandatory",
+          scrollSnapType: "y proximity",
           position: "relative",
         }}
       >
@@ -160,7 +160,7 @@ export default function NativeImageViewer() {
         </button>
 
         <label>
-          Zoom:&nbsp;
+          <span>Zoom:&nbsp;</span>
           <select value={zoomLevel} onChange={handleZoomChange}>
             {zoomOptions.map((z) => (
               <option key={z} value={z}>
