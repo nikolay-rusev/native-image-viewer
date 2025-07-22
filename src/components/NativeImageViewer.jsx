@@ -14,6 +14,8 @@ export default function NativeImageViewer() {
   const imageRefs = useRef([]);
   const isProgrammaticScroll = useRef(false);
 
+  console.log("activeIndex", activeIndex);
+
   useEffect(() => {
     const loadImages = async () => {
       const blobs = await Promise.all(
@@ -36,11 +38,12 @@ export default function NativeImageViewer() {
 
   // smooth scroll changed element into view
   useEffect(() => {
+    if (zoomLevel > 1) return;
     imageRefs?.current?.[activeIndex]?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
-  }, [activeIndex]);
+  }, [activeIndex, zoomLevel]);
 
   const handleZoomChange = (e) => {
     setZoomLevel(parseFloat(e.target.value));
@@ -65,7 +68,6 @@ export default function NativeImageViewer() {
 
     setActiveIndex(index);
   };
-
 
   const handleScroll = () => {
     if (isProgrammaticScroll.current || !outerContainerRef.current) return;
