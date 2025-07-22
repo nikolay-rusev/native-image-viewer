@@ -1,49 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const imageUrls = ["/images/img1.png", "/images/img2.png", "/images/img3.png"];
-
-export default function NativeImageViewer() {
+export default function NativeImageViewer({ images }) {
   const [zoomLevel, setZoomLevel] = useState(1);
   const zoomOptions = [1, 1.5, 2, 2.5, 3];
-
-  const [rotations, setRotations] = useState([]);
-  const [images, setImages] = useState([]);
+  const [rotations, setRotations] = useState(images?.map(() => 0));
   const [activeIndex, setActiveIndex] = useState(0);
 
   const outerContainerRef = useRef(null);
   const imageRefs = useRef([]);
   const isProgrammaticScroll = useRef(false);
 
-  console.log("activeIndex", activeIndex);
-
-  useEffect(() => {
-    const loadImages = async () => {
-      const blobs = await Promise.all(
-        imageUrls.map(async (url) => {
-          const res = await fetch(url);
-          const blob = await res.blob();
-          return URL.createObjectURL(blob);
-        }),
-      );
-      setImages(blobs);
-      setRotations(blobs.map(() => 0)); // 0° rotation per image
-    };
-
-    loadImages();
-
-    return () => {
-      images.forEach((src) => URL.revokeObjectURL(src));
-    };
-  }, []);
+  const isZoomed = zoomLevel !== 1;
 
   // smooth scroll changed element into view
   useEffect(() => {
-    if (zoomLevel > 1) return;
-    imageRefs?.current?.[activeIndex]?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  }, [activeIndex, zoomLevel]);
+    !isZoomed &&
+      imageRefs?.current?.[activeIndex]?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+  }, [activeIndex, isZoomed]);
 
   const handleZoomChange = (e) => {
     setZoomLevel(parseFloat(e.target.value));
@@ -113,7 +89,7 @@ export default function NativeImageViewer() {
           width: "80vw",
           height: "70vh",
           overflowY: "auto",
-          overflowX: zoomLevel > 1 ? "auto" : "hidden",
+          overflowX: isZoomed ? "auto" : "hidden",
           borderRadius: 8,
           background: "#222",
           position: "relative",
@@ -130,7 +106,7 @@ export default function NativeImageViewer() {
         >
           {images.map((src, i) => (
             <div
-              key={i}
+              key={"img-container" + i}
               ref={(el) => (imageRefs.current[i] = el)}
               style={{
                 height: "70vh",
