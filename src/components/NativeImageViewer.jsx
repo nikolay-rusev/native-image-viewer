@@ -93,7 +93,7 @@ export default function NativeImageViewer({ images }) {
           width: "80vw",
           height: "70vh",
           overflowY: "auto",
-          overflowX: isZoomed ? "auto" : "hidden",
+          // overflowX: isZoomed ? "auto" : "hidden",
           borderRadius: 8,
           background: "#222",
           position: "relative",
