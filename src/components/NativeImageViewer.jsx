@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 export default function NativeImageViewer({ images }) {
   const [zoomLevel, setZoomLevel] = useState(1);
-  const zoomOptions = [1, 1.5, 2, 2.5, 3];
+  const zoomOptions = [1, 2, 3, 4];
   const [rotations, setRotations] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -160,7 +160,7 @@ export default function NativeImageViewer({ images }) {
           <select value={zoomLevel} onChange={handleZoomChange}>
             {zoomOptions.map((z) => (
               <option key={z} value={z}>
-                {z}x
+                {z}00%
               </option>
             ))}
           </select>
