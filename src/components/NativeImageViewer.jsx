@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 export default function NativeImageViewer({ images }) {
   const [zoomLevel, setZoomLevel] = useState(1);
   const zoomOptions = [1, 1.5, 2, 2.5, 3];
-  const [rotations, setRotations] = useState(images?.map(() => 0));
+  const [rotations, setRotations] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const outerContainerRef = useRef(null);
@@ -11,6 +11,10 @@ export default function NativeImageViewer({ images }) {
   const isProgrammaticScroll = useRef(false);
 
   const isZoomed = zoomLevel !== 1;
+
+  useEffect(() => {
+    setRotations(images?.map(() => 0)); // 0° rotation per image
+  }, []);
 
   // smooth scroll changed element into view
   useEffect(() => {
