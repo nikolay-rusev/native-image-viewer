@@ -14,7 +14,7 @@ export default function NativeImageViewer({ images }) {
 
   useEffect(() => {
     setRotations(images?.map(() => 0)); // 0° rotation per image
-  }, []);
+  }, [images]);
 
   // smooth scroll changed element into view
   useEffect(() => {
@@ -108,7 +108,7 @@ export default function NativeImageViewer({ images }) {
             width: "100%",
           }}
         >
-          {images.map((src, i) => (
+          {images?.map((src, i) => (
             <div
               key={"img-container" + i}
               ref={(el) => (imageRefs.current[i] = el)}
