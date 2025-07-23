@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 export default function NativeImageViewer({ images }) {
   const [zoomLevel, setZoomLevel] = useState(1);
-  const zoomOptions = [1, 2, 3, 4];
+  const zoomOptions = [0.25, 0.5, 1, 2, 3, 4];
   const [rotations, setRotations] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -11,6 +11,7 @@ export default function NativeImageViewer({ images }) {
   const isProgrammaticScroll = useRef(false);
 
   const isZoomed = zoomLevel !== 1;
+  console.log("activeIndex: ", activeIndex);
 
   useEffect(() => {
     setRotations(images?.map(() => 0)); // 0° rotation per image
@@ -146,6 +147,9 @@ export default function NativeImageViewer({ images }) {
         >
           Previous
         </button>
+
+        <div>Selected #{activeIndex + 1}</div>
+
         <button
           onClick={() =>
             goToImage(Math.min(activeIndex + 1, images.length - 1))
@@ -160,7 +164,7 @@ export default function NativeImageViewer({ images }) {
           <select value={zoomLevel} onChange={handleZoomChange}>
             {zoomOptions.map((z) => (
               <option key={z} value={z}>
-                {z}00%
+                {z * 100}%
               </option>
             ))}
           </select>
