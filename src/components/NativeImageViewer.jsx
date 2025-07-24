@@ -162,7 +162,7 @@ export default function NativeImageViewer({ images }) {
               key={"img-container" + i}
               ref={(el) => (imageRefs.current[i] = el)}
               style={{
-                width: "70vh",
+                width: "70vw",
                 height: "70vh",
                 display: "flex",
                 justifyContent: "center",
