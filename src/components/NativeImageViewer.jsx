@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 
+function getScaleX(element) {
+  const transform = getComputedStyle(element).transform;
+  if (transform && transform !== "none") {
+    const matrix = new DOMMatrix(transform);
+    return matrix.a; // scaleX
+  }
+  return 1;
+}
+
 export default function NativeImageViewer({ images }) {
   const [zoomLevel, setZoomLevel] = useState(1);
   const zoomOptions = [0.25, 0.5, 1, 2, 3, 4];
@@ -7,6 +16,7 @@ export default function NativeImageViewer({ images }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const outerContainerRef = useRef(null);
+  const innerContainerRef = useRef(null);
   const imageRefs = useRef([]);
   const isProgrammaticScroll = useRef(false);
 
@@ -22,12 +32,40 @@ export default function NativeImageViewer({ images }) {
 
   // smooth scroll changed element into view
   useEffect(() => {
+    const currentImage = imageRefs?.current?.[activeIndex];
     !isZoomed &&
-      imageRefs?.current?.[activeIndex]?.scrollIntoView({
+      currentImage?.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
   }, [activeIndex, isZoomed]);
+
+  // on zoom in: center on x
+  useEffect(() => {
+    setTimeout(() => {
+      const container = outerContainerRef?.current;
+      const innerContainer = innerContainerRef?.current;
+      const item = imageRefs?.current?.[activeIndex];
+
+      if (isZoomedIn && container && item) {
+        const containerScale = getScaleX(container);
+        const itemScale = getScaleX(innerContainer);
+
+        // Adjusted measurements accounting for transforms
+        const containerVisibleWidth = container.clientWidth / containerScale;
+        const itemOffsetLeft = item.offsetLeft / containerScale;
+        const itemWidth = item.offsetWidth * itemScale;
+
+        const scrollTarget =
+          itemOffsetLeft - containerVisibleWidth / 2 + itemWidth / 2;
+
+        container.scrollTo({
+          left: scrollTarget,
+          behavior: "instant",
+        });
+      }
+    }, 100);
+  }, [isZoomedIn, zoomLevel]);
 
   const handleZoomChange = (e) => {
     setZoomLevel(parseFloat(e.target.value));
@@ -106,10 +144,11 @@ export default function NativeImageViewer({ images }) {
       >
         {/* Inner zoomable container */}
         <div
+          ref={innerContainerRef}
           style={{
             transform: isZoomedIn ? `scale(${zoomLevel})` : ``,
             transformOrigin: "top left",
-            transition: "transform 0.2s ease",
+            transition: "transform 0.1s ease",
             width: "100%",
           }}
         >
@@ -135,7 +174,7 @@ export default function NativeImageViewer({ images }) {
                   transform: isZoomedOut
                     ? `scale(${zoomLevel}) rotate(${rotations[i]}deg)`
                     : `rotate(${rotations[i]}deg)`,
-                  transition: "transform 0.3s ease",
+                  transition: "transform 0.1s ease",
                   userSelect: "none",
                   pointerEvents: "none",
                 }}
