@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
 function getScaleX(element) {
   const transform = getComputedStyle(element).transform;
@@ -42,6 +44,8 @@ export default function NativeImageViewer({ images }) {
 
   // on zoom in: center on x
   useEffect(() => {
+    gsap.registerPlugin(ScrollToPlugin);
+
     setTimeout(() => {
       const container = outerContainerRef?.current;
       const innerContainer = innerContainerRef?.current;
@@ -56,12 +60,13 @@ export default function NativeImageViewer({ images }) {
         const itemOffsetLeft = item.offsetLeft / containerScale;
         const itemWidth = item.offsetWidth * itemScale;
 
-        const scrollTarget =
+        const offset =
           itemOffsetLeft - containerVisibleWidth / 2 + itemWidth / 2;
 
-        container.scrollTo({
-          left: scrollTarget,
-          behavior: "instant",
+        gsap.to(container, {
+          scrollTo: { x: offset },
+          duration: 1,
+          ease: 'power2.out',
         });
       }
     }, 100);
