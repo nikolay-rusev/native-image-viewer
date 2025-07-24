@@ -11,6 +11,9 @@ export default function NativeImageViewer({ images }) {
   const isProgrammaticScroll = useRef(false);
 
   const isZoomed = zoomLevel !== 1;
+  const isZoomedIn = zoomLevel > 1;
+  const isZoomedOut = zoomLevel < 1;
+
   console.log("activeIndex: ", activeIndex);
 
   useEffect(() => {
@@ -104,7 +107,7 @@ export default function NativeImageViewer({ images }) {
         {/* Inner zoomable container */}
         <div
           style={{
-            transform: `scale(${zoomLevel})`,
+            transform: isZoomedIn ? `scale(${zoomLevel})` : ``,
             transformOrigin: "top left",
             transition: "transform 0.2s ease",
             width: "100%",
@@ -129,7 +132,9 @@ export default function NativeImageViewer({ images }) {
                 style={{
                   maxWidth: "100%",
                   maxHeight: "100%",
-                  transform: `rotate(${rotations[i]}deg)`,
+                  transform: isZoomedOut
+                    ? `scale(${zoomLevel}) rotate(${rotations[i]}deg)`
+                    : `rotate(${rotations[i]}deg)`,
                   transition: "transform 0.3s ease",
                   userSelect: "none",
                   pointerEvents: "none",
