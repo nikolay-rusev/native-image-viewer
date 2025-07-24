@@ -2,7 +2,17 @@ import "./App.css";
 import NativeImageViewer from "./components/NativeImageViewer";
 import { useEffect, useState } from "react";
 
-const imageUrls = ["/images/img1.png", "/images/img2.png", "/images/img3.png"];
+const imageUrls = [
+  "/images/img1.png",
+  "/images/img2.png",
+  "/images/img3.png",
+  "/images/example.jpg",
+  "/images/example1.png",
+  "/images/example2.png",
+  "/images/example3.png",
+  "/images/example4.jpg",
+  "/images/example5.png",
+];
 
 function App() {
   const [images, setImages] = useState([]);
