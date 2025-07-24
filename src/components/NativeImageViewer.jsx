@@ -65,11 +65,11 @@ export default function NativeImageViewer({ images }) {
 
         gsap.to(container, {
           scrollTo: { x: offset },
-          duration: 1,
+          duration: 0.1,
           ease: 'power2.out',
         });
       }
-    }, 100);
+    }, 200);
   }, [isZoomedIn, zoomLevel]);
 
   const handleZoomChange = (e) => {
@@ -153,7 +153,7 @@ export default function NativeImageViewer({ images }) {
           style={{
             transform: isZoomedIn ? `scale(${zoomLevel})` : ``,
             transformOrigin: "top left",
-            transition: "transform 0.1s ease",
+            transition: "transform 0.2s ease",
             width: "100%",
           }}
         >
@@ -179,7 +179,7 @@ export default function NativeImageViewer({ images }) {
                   transform: isZoomedOut
                     ? `scale(${zoomLevel}) rotate(${rotations[i]}deg)`
                     : `rotate(${rotations[i]}deg)`,
-                  transition: "transform 0.1s ease",
+                  transition: "transform 0.2s ease",
                   userSelect: "none",
                   pointerEvents: "none",
                 }}
