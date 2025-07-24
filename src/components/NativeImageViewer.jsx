@@ -97,7 +97,8 @@ export default function NativeImageViewer({ images }) {
           // overflowX: isZoomed ? "auto" : "hidden",
           borderRadius: 8,
           background: "#222",
-          position: "relative",
+          display: "flex",
+          justifyContent: "center",
         }}
       >
         {/* Inner zoomable container */}
